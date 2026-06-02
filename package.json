@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "github:setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-github.ps1",
+    "github:sync": "powershell -ExecutionPolicy Bypass -File ./scripts/sync-github.ps1"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
