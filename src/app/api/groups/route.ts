@@ -90,3 +90,41 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "그룹 생성에 실패했어요" }, { status: 500 });
   }
 }
+
+export async function DELETE() {
+  try {
+    const userId = await getSessionUserId();
+    if (!userId) {
+      return NextResponse.json({ error: "로그인이 필요해요" }, { status: 401 });
+    }
+
+    const sql = getSql();
+    const userRows = await sql`SELECT group_id FROM users WHERE id = ${userId}`;
+    const groupId = userRows[0]?.group_id;
+    if (!groupId) {
+      return NextResponse.json({ error: "속한 그룹이 없어요" }, { status: 400 });
+    }
+
+    const groupRows = await sql`
+      SELECT id, created_by FROM study_groups WHERE id = ${groupId}
+    `;
+    const group = groupRows[0];
+    if (!group) {
+      return NextResponse.json({ error: "그룹을 찾을 수 없어요" }, { status: 404 });
+    }
+
+    if (group.created_by !== userId) {
+      return NextResponse.json(
+        { error: "그룹을 만든 사람만 삭제할 수 있어요" },
+        { status: 403 }
+      );
+    }
+
+    await sql`DELETE FROM study_groups WHERE id = ${groupId}`;
+
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "그룹 삭제에 실패했어요" }, { status: 500 });
+  }
+}

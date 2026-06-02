@@ -107,6 +107,26 @@ export default function GroupPage() {
     }
   };
 
+  const handleDeleteGroup = async () => {
+    if (!group) return;
+    if (!window.confirm(`"${group.name}" 그룹을 삭제할까요?\n모든 멤버가 그룹에서 나가게 됩니다.`)) {
+      return;
+    }
+    setActionLoading(true);
+    setMessage("");
+    try {
+      await api("/api/groups", { method: "DELETE" });
+      setMessage("그룹이 삭제됐어요");
+      await loadData();
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "그룹 삭제 실패");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const isGroupCreator = group?.created_by === profile?.id;
+
   if (loading) {
     return (
       <div className="flex min-h-dvh items-center justify-center">
@@ -182,6 +202,16 @@ export default function GroupPage() {
                 복사
               </button>
             </div>
+            {isGroupCreator && (
+              <button
+                type="button"
+                onClick={handleDeleteGroup}
+                disabled={actionLoading}
+                className="btn-inline mt-4 w-full border border-coral/40 bg-coral/10 text-coral"
+              >
+                {actionLoading ? "삭제 중..." : "그룹 삭제"}
+              </button>
+            )}
           </CuteCard>
 
           <CuteCard emoji="🐰" title="멤버">

@@ -8,7 +8,10 @@ export function PwaRegister() {
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
+      navigator.serviceWorker
+        .register("/sw.js", { scope: "/" })
+        .then((reg) => reg.update())
+        .catch(() => {});
     }
 
     const handler = (e: Event) => {
@@ -34,7 +37,7 @@ export function PwaRegister() {
   return (
     <div className="fixed bottom-20 left-0 right-0 z-40 mx-auto max-w-md px-4">
       <div className="flex items-center justify-between gap-3 rounded-xl bg-white px-4 py-3 shadow-card">
-        <p className="text-xs text-soft-text">홈 화면에 추가하면 앱처럼 쓸 수 있어요</p>
+        <p className="text-xs text-soft-text">앱으로 설치하면 크롬 없이 사용할 수 있어요</p>
         <button type="button" onClick={handleInstall} className="btn-inline-primary shrink-0 !text-xs">
           설치
         </button>

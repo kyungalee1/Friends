@@ -1,6 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="96" fill="#FFF8F0"/>
-  <text x="140" y="280" font-size="120">??</text>
-  <text x="300" y="280" font-size="120">??</text>
-  <text x="230" y="400" font-size="60">??</text>
+  <ellipse cx="180" cy="300" rx="70" ry="50" fill="#FFB5C5"/>
+  <circle cx="155" cy="220" r="45" fill="#FFB5C5"/>
+  <circle cx="130" cy="205" r="18" fill="#FFB5C5"/>
+  <circle cx="200" cy="210" r="18" fill="#FFB5C5"/>
+  <circle cx="145" cy="215" r="6" fill="#4A4A4A"/>
+  <circle cx="175" cy="215" r="6" fill="#4A4A4A"/>
+  <ellipse cx="340" cy="310" rx="85" ry="55" fill="#7FD4A8"/>
+  <circle cx="340" cy="250" r="40" fill="#7FD4A8"/>
+  <circle cx="315" cy="240" r="8" fill="#4A4A4A"/>
+  <path d="M255 360 L290 340 L320 365" stroke="#FFD4B8" stroke-width="8" fill="none" stroke-linecap="round"/>
 </svg>
