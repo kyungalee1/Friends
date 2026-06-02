@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "PIN은 4자리 숫자여야 해요" }, { status: 400 });
     }
     if (!nickname || nickname.length > 12) {
-      return NextResponse.json({ error: "닉네임을 입력해주세요 (12자 이내)" }, { status: 400 });
+      return NextResponse.json({ error: "이름을 실명으로 입력해주세요 (12자 이내)" }, { status: 400 });
     }
     if (emoji !== "🐰" && emoji !== "🐢") {
       return NextResponse.json({ error: "캐릭터를 선택해주세요" }, { status: 400 });

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSessionUserId } from "@/lib/auth-session";
 import { getSql } from "@/lib/db";
-import { getTodayDateKey, toDateKey } from "@/lib/utils";
+import { getMonthStartDateKey, getTodayDateKey, toDateKey } from "@/lib/utils";
 
 export async function GET() {
   try {
@@ -11,14 +11,12 @@ export async function GET() {
     }
 
     const sql = getSql();
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    const weekStart = toDateKey(weekAgo);
+    const monthStart = getMonthStartDateKey();
 
     const rows = await sql`
       SELECT id, user_id, subject, minutes, studied_at, created_at
       FROM study_sessions
-      WHERE user_id = ${userId} AND studied_at >= ${weekStart}
+      WHERE user_id = ${userId} AND studied_at >= ${monthStart}
       ORDER BY studied_at DESC, created_at DESC
     `;
 
@@ -27,7 +25,7 @@ export async function GET() {
       user_id: row.user_id,
       subject: row.subject,
       minutes: row.minutes,
-      studied_at: toDateKey(String(row.studied_at)),
+      studied_at: toDateKey(row.studied_at as string | Date),
       created_at: row.created_at,
     }));
 
@@ -35,9 +33,9 @@ export async function GET() {
     const todayTotal = sessions
       .filter((s) => s.studied_at === today)
       .reduce((sum, s) => sum + s.minutes, 0);
-    const weekTotal = sessions.reduce((sum, s) => sum + s.minutes, 0);
+    const monthTotal = sessions.reduce((sum, s) => sum + s.minutes, 0);
 
-    return NextResponse.json({ sessions, todayTotal, weekTotal, today });
+    return NextResponse.json({ sessions, todayTotal, monthTotal, today });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "조회에 실패했어요" }, { status: 500 });
@@ -71,7 +69,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       session: {
         ...row,
-        studied_at: toDateKey(String(row.studied_at)),
+        studied_at: toDateKey(row.studied_at as string | Date),
       },
     });
   } catch (e) {

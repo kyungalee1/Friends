@@ -59,13 +59,29 @@ export function getTodayDateKey(): string {
   );
 }
 
-/** DB/API 날짜 값을 YYYY-MM-DD로 통일 */
+/** KST 기준 이번 달 1일 YYYY-MM-DD */
+export function getMonthStartDateKey(): string {
+  const today = getTodayDateKey();
+  return `${today.slice(0, 7)}-01`;
+}
+
+/** DB/API 날짜 값을 KST 기준 YYYY-MM-DD로 통일 */
 export function toDateKey(value: string | Date | null | undefined): string {
   if (!value) return "";
-  if (typeof value === "string") return value.slice(0, 10);
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(
-    value
-  );
+  if (value instanceof Date) {
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(
+      value
+    );
+  }
+  const s = String(value).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  const parsed = new Date(s);
+  if (!Number.isNaN(parsed.getTime())) {
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(
+      parsed
+    );
+  }
+  return s.slice(0, 10);
 }
 
 export function formatCheerTime(iso: string): string {

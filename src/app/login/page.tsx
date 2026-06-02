@@ -35,7 +35,7 @@ export default function LoginPage() {
 
   const handleRegister = async () => {
     if (!nickname.trim()) {
-      setError("닉네임을 입력해주세요");
+      setError("이름을 입력해주세요");
       return;
     }
     if (pin !== pinConfirm) {
@@ -136,15 +136,16 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="text-label mb-1.5 block">닉네임</label>
+              <label className="text-label mb-1.5 block">이름</label>
               <input
                 type="text"
                 className="input-cute"
-                placeholder="예: 공부왕"
+                placeholder="실명으로 가입해주세요"
                 maxLength={12}
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
               />
+              <p className="text-caption mt-1.5">친구들이 알아볼 수 있도록 실명으로 적어주세요</p>
             </div>
 
             <div>

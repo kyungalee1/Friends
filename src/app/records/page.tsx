@@ -9,7 +9,7 @@ import { formatMinutes } from "@/lib/utils";
 
 export default function RecordsPage() {
   const [sessions, setSessions] = useState<StudySession[]>([]);
-  const [weekTotal, setWeekTotal] = useState(0);
+  const [monthTotal, setMonthTotal] = useState(0);
   const [todayTotal, setTodayTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -18,16 +18,16 @@ export default function RecordsPage() {
       const data = await api<{
         sessions: StudySession[];
         todayTotal: number;
-        weekTotal: number;
+        monthTotal: number;
       }>("/api/study/sessions");
 
       setSessions(data.sessions);
       setTodayTotal(data.todayTotal);
-      setWeekTotal(data.weekTotal);
+      setMonthTotal(data.monthTotal);
     } catch {
       setSessions([]);
       setTodayTotal(0);
-      setWeekTotal(0);
+      setMonthTotal(0);
     } finally {
       setLoading(false);
     }
@@ -70,13 +70,13 @@ export default function RecordsPage() {
           <p className="text-stat mt-1">{formatMinutes(todayTotal)}</p>
         </CuteCard>
         <CuteCard>
-          <p className="text-label">이번 주</p>
-          <p className="text-stat mt-1">{formatMinutes(weekTotal)}</p>
+          <p className="text-label">이번 달</p>
+          <p className="text-stat mt-1">{formatMinutes(monthTotal)}</p>
         </CuteCard>
       </div>
 
       {Object.keys(subjectTotals).length > 0 && (
-        <CuteCard emoji="📖" title="과목별 (이번 주)">
+        <CuteCard emoji="📖" title="과목별 (이번 달)">
           <div className="space-y-0.5">
             {Object.entries(subjectTotals)
               .sort(([, a], [, b]) => b - a)
