@@ -11,10 +11,16 @@ import { getTodayDateKey } from "@/lib/utils";
 export default function StudyPage() {
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [toastKind, setToastKind] = useState<"success" | "error">("success");
 
-  const handleComplete = async (subjectId: string, minutes: number) => {
+  const handleComplete = async (
+    subjectId: string,
+    minutes: number,
+    meta?: { reason?: "manual" | "max" }
+  ) => {
     setSaving(true);
     setMessage("");
+    setToastKind("success");
     try {
       const subject = SUBJECTS.find((s) => s.id === subjectId);
       await api("/api/study/sessions", {
@@ -25,8 +31,13 @@ export default function StudyPage() {
           studied_at: getTodayDateKey(),
         }),
       });
-      setMessage(`${subject?.label} ${minutes}분 기록 완료!`);
+      if (meta?.reason === "max") {
+        setMessage("60분이 되었어요! 쉬는 시간을 가지세요 😊");
+      } else {
+        setMessage(`${subject?.label} ${minutes}분 기록 완료!`);
+      }
     } catch (e) {
+      setToastKind("error");
       setMessage(e instanceof Error ? e.message : "저장에 실패했어요");
     } finally {
       setSaving(false);
@@ -42,7 +53,7 @@ export default function StudyPage() {
       </CuteCard>
 
       {message && (
-        <p className={message.includes("완료") ? "toast-success" : "toast-error"}>
+        <p className={toastKind === "success" ? "toast-success" : "toast-error"}>
           {saving ? "저장 중..." : message}
         </p>
       )}
