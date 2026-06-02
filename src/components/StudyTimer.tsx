@@ -33,9 +33,9 @@ export function StudyTimer({ onComplete }: StudyTimerProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <p className="mb-3 text-center text-sm text-soft-muted">과목을 선택해요</p>
+        <p className="text-label mb-2 text-center">과목 선택</p>
         <div className="grid grid-cols-3 gap-2">
           {SUBJECTS.map((subject) => (
             <button
@@ -43,42 +43,41 @@ export function StudyTimer({ onComplete }: StudyTimerProps) {
               type="button"
               onClick={() => !isRunning && setSelectedSubject(subject.id)}
               disabled={isRunning}
-              className={`rounded-2xl p-3 text-center transition-all ${
+              className={`rounded-xl p-2.5 text-center transition-all ${
                 selectedSubject === subject.id
-                  ? `${subject.color} ring-2 ring-pink scale-105`
-                  : "bg-white/60 hover:bg-white"
+                  ? `${subject.color} ring-2 ring-pink/50`
+                  : "bg-white/60"
               } ${isRunning ? "opacity-60" : ""}`}
             >
-              <div className="text-2xl">{subject.emoji}</div>
-              <div className="text-xs font-bold">{subject.label}</div>
+              <div className="text-xl leading-none">{subject.emoji}</div>
+              <div className="text-caption mt-1 font-medium">{subject.label}</div>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="card-cute text-center">
-        <div className="mb-2 text-6xl animate-float">📚</div>
-        <div className="font-mono text-5xl font-bold text-soft-text">
+      <div className="rounded-xl bg-white/60 py-5 text-center">
+        <p className="text-stat font-mono tracking-wider">
           {String(minutes).padStart(2, "0")}:{String(displaySeconds).padStart(2, "0")}
-        </div>
-        <p className="mt-2 text-sm text-soft-muted">
-          {isRunning ? "열심히 공부 중... 💪" : "시작 버튼을 눌러요!"}
+        </p>
+        <p className="text-caption mt-2">
+          {isRunning ? "열심히 공부 중 💪" : "시작 버튼을 눌러주세요"}
         </p>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         {!isRunning ? (
-          <button type="button" onClick={handleStart} className="btn-primary flex-1">
-            {seconds > 0 ? "▶️ 계속하기" : "🚀 시작!"}
+          <button type="button" onClick={handleStart} className="btn-primary-auto">
+            {seconds > 0 ? "계속하기" : "시작하기"}
           </button>
         ) : (
-          <button type="button" onClick={handlePause} className="btn-secondary flex-1">
-            ⏸️ 잠깐 쉬기
+          <button type="button" onClick={handlePause} className="btn-secondary-auto">
+            잠깐 쉬기
           </button>
         )}
         {seconds > 0 && (
-          <button type="button" onClick={handleFinish} className="btn-primary flex-1">
-            ✅ 완료 ({formatMinutes(Math.max(Math.ceil(seconds / 60), 1))})
+          <button type="button" onClick={handleFinish} className="btn-primary-auto">
+            완료 ({formatMinutes(Math.max(Math.ceil(seconds / 60), 1))})
           </button>
         )}
       </div>

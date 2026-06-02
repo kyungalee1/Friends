@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
 import { CuteCard } from "@/components/CuteCard";
+import { PageHeader } from "@/components/PageHeader";
 import { RaceTrack } from "@/components/RaceTrack";
 import { ReceivedCheers } from "@/components/ReceivedCheers";
 import { DDayBanner } from "@/components/DDayBanner";
@@ -48,7 +49,7 @@ export default function HomePage() {
   if (loading) {
     return (
       <div className="flex min-h-dvh items-center justify-center">
-        <span className="text-4xl animate-bounce">🐰</span>
+        <span className="text-3xl animate-bounce">🐰</span>
       </div>
     );
   }
@@ -60,61 +61,54 @@ export default function HomePage() {
       ? Math.round(totals.reduce((s, t) => s + t.total_minutes, 0) / totals.length)
       : 0;
 
+  const dateLabel = new Date().toLocaleDateString("ko-KR", {
+    month: "long",
+    day: "numeric",
+    weekday: "short",
+  });
+
   return (
-    <div className="space-y-3 px-3 pt-4">
-      <header className="text-center">
-        <h1 className="text-xl font-semibold text-soft-text">오늘의 레이스 🏁</h1>
-        <p className="text-xs text-soft-muted">
-          {new Date().toLocaleDateString("ko-KR", {
-            month: "long",
-            day: "numeric",
-            weekday: "short",
-          })}
-        </p>
-      </header>
+    <div className="page-shell">
+      <PageHeader title="오늘의 레이스 🏁" subtitle={dateLabel} />
 
       <DDayBanner />
 
       {cheers.length > 0 && (
-        <CuteCard emoji="💌" title="받은 응원" compact className="!p-2.5">
-          <ReceivedCheers cheers={cheers} compact />
+        <CuteCard emoji="💌" title="받은 응원">
+          <ReceivedCheers cheers={cheers} />
         </CuteCard>
       )}
 
       {!profile?.group_id ? (
-        <CuteCard emoji="👥" title="그룹에 참여해요" compact className="!p-3">
-          <p className="mb-3 text-xs text-soft-muted">
-            친구들과 함께 레이스를 시작하려면 그룹에 가입하세요!
+        <CuteCard emoji="👥" title="그룹에 참여해요">
+          <p className="text-body mb-4 text-soft-muted">
+            친구들과 함께 레이스를 시작하려면 그룹에 가입하세요.
           </p>
-          <Link href="/group" className="btn-primary block text-center text-sm">
+          <Link href="/group" className="btn-primary block text-center">
             그룹 참여하기
           </Link>
         </CuteCard>
       ) : (
         <>
-          <CuteCard emoji={profile.emoji} title="내 오늘 공부" compact className="!p-3">
-            <div className="flex items-center justify-between">
+          <CuteCard emoji={profile.emoji} title="내 오늘 공부">
+            <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-2xl font-semibold text-soft-text">
-                  {formatMinutes(myTotal?.total_minutes || 0)}
-                </p>
-                <p className="text-xs text-soft-muted">
-                  그룹 평균 {formatMinutes(groupAvg)}
-                </p>
+                <p className="text-stat">{formatMinutes(myTotal?.total_minutes || 0)}</p>
+                <p className="text-caption mt-1">그룹 평균 {formatMinutes(groupAvg)}</p>
               </div>
-              <Link href="/study" className="btn-primary text-sm !py-2 !px-4">
-                📚 공부하기
+              <Link href="/study" className="btn-inline-primary shrink-0">
+                공부하기
               </Link>
             </div>
           </CuteCard>
 
-          <CuteCard emoji="🏃" title="레이스 현황" compact className="!p-2">
+          <CuteCard emoji="🏃" title="레이스 현황">
             {totals.length === 0 ? (
-              <p className="py-4 text-center text-xs text-soft-muted">
-                아직 오늘 공부 기록이 없어요. 첫 번째 주자가 되어보세요! 🐰
+              <p className="text-caption py-4 text-center">
+                아직 오늘 공부 기록이 없어요. 첫 번째 주자가 되어보세요!
               </p>
             ) : (
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 {totals.map((member, idx) => (
                   <RaceTrack
                     key={member.user_id}
@@ -131,11 +125,11 @@ export default function HomePage() {
           </CuteCard>
 
           {myTotal && myTotal.total_minutes > 0 && (
-            <div className="rounded-xl bg-mint/30 px-3 py-2 text-center text-xs font-medium text-soft-text">
+            <p className="toast-success">
               {myTotal.total_minutes >= groupAvg
                 ? "🌟 평균 이상! 오늘도 잘하고 있어요!"
                 : "💪 조금만 더 하면 평균을 넘을 수 있어요!"}
-            </div>
+            </p>
           )}
         </>
       )}

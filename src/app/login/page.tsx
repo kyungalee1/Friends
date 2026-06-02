@@ -63,23 +63,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center px-6">
-      <div className="mb-8 text-center">
-        <div className="mb-4 flex justify-center gap-4 text-6xl">
+    <div className="flex min-h-dvh flex-col items-center justify-center px-6 pb-8">
+      <div className="mb-6 text-center">
+        <div className="mb-3 flex justify-center gap-3 text-5xl">
           <span className="animate-race-run">🐰</span>
-          <span className="text-4xl self-center">🏁</span>
+          <span className="text-3xl self-center">🏁</span>
           <span className="animate-race-run" style={{ animationDelay: "0.3s" }}>🐢</span>
         </div>
-        <h1 className="text-3xl font-bold text-soft-text">공부 레이스</h1>
-        <p className="mt-2 text-soft-muted">친구들과 함께 달려봐요!</p>
+        <h1 className="text-page-title">공부 레이스</h1>
+        <p className="text-page-sub mt-1">친구들과 함께 달려봐요</p>
       </div>
 
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex w-full max-w-sm gap-2">
         <button
           type="button"
           onClick={() => { setMode("login"); setError(""); }}
-          className={`rounded-2xl px-5 py-2 text-sm font-bold transition-all ${
-            mode === "login" ? "bg-pink text-white shadow-cute" : "bg-white/60 text-soft-muted"
+          className={`flex-1 rounded-xl py-2 text-sm font-medium transition-colors ${
+            mode === "login" ? "bg-gradient-to-r from-pink to-peach text-white shadow-cute" : "bg-white/70 text-soft-muted"
           }`}
         >
           로그인
@@ -87,8 +87,8 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={() => { setMode("register"); setError(""); }}
-          className={`rounded-2xl px-5 py-2 text-sm font-bold transition-all ${
-            mode === "register" ? "bg-pink text-white shadow-cute" : "bg-white/60 text-soft-muted"
+          className={`flex-1 rounded-xl py-2 text-sm font-medium transition-colors ${
+            mode === "register" ? "bg-gradient-to-r from-pink to-peach text-white shadow-cute" : "bg-white/70 text-soft-muted"
           }`}
         >
           회원가입
@@ -97,7 +97,7 @@ export default function LoginPage() {
 
       <div className="card-cute w-full max-w-sm space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-bold text-soft-muted">휴대폰 번호</label>
+          <label className="text-label mb-1.5 block">휴대폰 번호</label>
           <input
             type="tel"
             className="input-cute"
@@ -108,10 +108,10 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-bold text-soft-muted">PIN (4자리)</label>
+          <label className="text-label mb-1.5 block">PIN (4자리)</label>
           <input
             type="password"
-            className="input-cute text-center text-2xl tracking-[0.5em]"
+            className="input-cute text-center text-lg tracking-[0.4em]"
             placeholder="••••"
             maxLength={4}
             inputMode="numeric"
@@ -123,10 +123,10 @@ export default function LoginPage() {
         {mode === "register" && (
           <>
             <div>
-              <label className="mb-1 block text-sm font-bold text-soft-muted">PIN 확인</label>
+              <label className="text-label mb-1.5 block">PIN 확인</label>
               <input
                 type="password"
-                className="input-cute text-center text-2xl tracking-[0.5em]"
+                className="input-cute text-center text-lg tracking-[0.4em]"
                 placeholder="••••"
                 maxLength={4}
                 inputMode="numeric"
@@ -136,7 +136,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-bold text-soft-muted">닉네임</label>
+              <label className="text-label mb-1.5 block">닉네임</label>
               <input
                 type="text"
                 className="input-cute"
@@ -148,23 +148,23 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <p className="mb-2 text-center text-sm text-soft-muted">캐릭터 선택</p>
-              <div className="flex justify-center gap-4">
+              <p className="text-label mb-2 text-center">캐릭터 선택</p>
+              <div className="flex justify-center gap-3">
                 {(["🐰", "🐢"] as EmojiChar[]).map((e) => (
                   <button
                     key={e}
                     type="button"
                     onClick={() => setEmoji(e)}
-                    className={`rounded-2xl p-4 text-4xl transition-all ${
-                      emoji === e ? "bg-pink/30 ring-2 ring-pink scale-110" : "bg-white/60"
+                    className={`rounded-xl p-3 text-3xl transition-all ${
+                      emoji === e ? "bg-pink/25 ring-2 ring-pink" : "bg-white/60"
                     }`}
                   >
                     {e}
                   </button>
                 ))}
               </div>
-              <p className="mt-2 text-center text-xs text-soft-muted">
-                {emoji === "🐰" ? "토끼 — 빠르게 달려요!" : "거북이 — 꾸준히 달려요!"}
+              <p className="text-caption mt-2 text-center">
+                {emoji === "🐰" ? "토끼 — 빠르게 달려요" : "거북이 — 꾸준히 달려요"}
               </p>
             </div>
           </>
@@ -174,20 +174,12 @@ export default function LoginPage() {
           type="button"
           onClick={mode === "login" ? handleLogin : handleRegister}
           disabled={loading || phone.length < 10 || pin.length < 4}
-          className="btn-primary w-full"
+          className="btn-primary"
         >
-          {loading
-            ? "처리 중..."
-            : mode === "login"
-              ? "🔑 로그인"
-              : "🎉 시작하기"}
+          {loading ? "처리 중..." : mode === "login" ? "로그인" : "시작하기"}
         </button>
 
-        {error && (
-          <p className="rounded-xl bg-coral/20 px-3 py-2 text-center text-sm text-coral">
-            {error}
-          </p>
-        )}
+        {error && <p className="toast-error">{error}</p>}
       </div>
     </div>
   );

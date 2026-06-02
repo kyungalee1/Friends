@@ -9,36 +9,110 @@
     @apply bg-cream text-soft-text antialiased;
     font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     font-weight: 300;
+    font-size: 14px;
+    line-height: 1.5;
     background-image: radial-gradient(circle at 20% 20%, rgba(255, 212, 184, 0.3) 0%, transparent 50%),
       radial-gradient(circle at 80% 80%, rgba(184, 240, 216, 0.3) 0%, transparent 50%);
     min-height: 100dvh;
   }
-
-  h1, h2, h3, strong, .font-bold {
-    font-weight: 600;
-  }
 }
 
 @layer components {
+  /* Layout */
+  .page-shell {
+    @apply space-y-4 px-4 pt-5 pb-2;
+  }
+
+  /* Typography */
+  .text-page-title {
+    @apply text-xl font-semibold text-soft-text leading-tight;
+  }
+
+  .text-page-sub {
+    @apply text-sm font-normal text-soft-muted leading-snug;
+  }
+
+  .text-card-title {
+    @apply text-base font-semibold text-soft-text leading-tight;
+  }
+
+  .text-body {
+    @apply text-sm font-normal text-soft-text;
+  }
+
+  .text-caption {
+    @apply text-xs font-normal text-soft-muted;
+  }
+
+  .text-stat {
+    @apply text-2xl font-semibold text-soft-text leading-none;
+  }
+
+  .text-label {
+    @apply text-sm font-medium text-soft-muted;
+  }
+
+  /* Buttons */
   .btn-cute {
-    @apply rounded-2xl px-6 py-3 font-cute text-base transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100;
-    font-weight: 500;
+    @apply rounded-2xl px-6 py-3 text-sm font-medium transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100;
   }
 
   .btn-primary {
-    @apply btn-cute bg-gradient-to-r from-pink to-peach text-white shadow-cute hover:shadow-lg;
+    @apply btn-cute w-full bg-gradient-to-r from-pink to-peach text-white shadow-cute;
+  }
+
+  .btn-primary-auto {
+    @apply btn-cute flex-1 bg-gradient-to-r from-pink to-peach text-white shadow-cute;
+  }
+
+  .btn-secondary-auto {
+    @apply btn-cute flex-1 bg-white text-soft-text shadow-card border-2 border-pink/30;
   }
 
   .btn-secondary {
-    @apply btn-cute bg-white text-soft-text shadow-card border-2 border-pink/30;
+    @apply btn-cute w-full bg-white text-soft-text shadow-card border-2 border-pink/30;
   }
 
+  .btn-inline {
+    @apply rounded-xl px-4 py-2 text-sm font-medium transition-all active:scale-[0.98];
+  }
+
+  .btn-inline-primary {
+    @apply btn-inline bg-gradient-to-r from-pink to-peach text-white shadow-cute;
+  }
+
+  .btn-inline-secondary {
+    @apply btn-inline bg-white text-soft-text border border-pink/30;
+  }
+
+  /* Cards & lists */
   .card-cute {
-    @apply rounded-3xl bg-white/80 backdrop-blur-sm shadow-card border border-white/60 p-5;
+    @apply rounded-2xl bg-white/85 backdrop-blur-sm shadow-card border border-white/60 p-4;
+  }
+
+  .list-row {
+    @apply flex items-center justify-between rounded-xl bg-white/60 px-3 py-2;
   }
 
   .input-cute {
-    @apply w-full rounded-2xl border-2 border-pink/20 bg-white px-4 py-3 font-cute text-soft-text placeholder:text-soft-muted focus:border-pink focus:outline-none focus:ring-2 focus:ring-pink/20;
+    @apply w-full rounded-xl border border-pink/25 bg-white px-4 py-2.5 text-sm text-soft-text placeholder:text-soft-muted focus:border-pink focus:outline-none focus:ring-2 focus:ring-pink/15;
     font-weight: 400;
+  }
+
+  /* Feedback */
+  .toast {
+    @apply rounded-xl px-4 py-3 text-center text-sm font-normal text-soft-text;
+  }
+
+  .toast-success {
+    @apply toast bg-mint/40;
+  }
+
+  .toast-info {
+    @apply toast bg-lavender/30;
+  }
+
+  .toast-error {
+    @apply toast bg-coral/15 text-coral;
   }
 }
