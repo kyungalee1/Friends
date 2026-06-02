@@ -17,13 +17,20 @@ export default function HomePage() {
   const [cheers, setCheers] = useState<ReceivedCheer[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const loadCheers = useCallback(async () => {
+    try {
+      const cheersData = await api<{ cheers: ReceivedCheer[] }>("/api/cheers");
+      setCheers(cheersData.cheers);
+    } catch {
+      setCheers([]);
+    }
+  }, []);
+
   const loadData = useCallback(async () => {
     try {
       const me = await api<{ user: Profile }>("/api/auth/me");
       setProfile(me.user);
-
-      const cheersData = await api<{ cheers: ReceivedCheer[] }>("/api/cheers");
-      setCheers(cheersData.cheers.slice(0, 5));
+      await loadCheers();
 
       if (me.user.group_id) {
         const race = await api<{ totals: DailyTotal[] }>("/api/groups/race");
@@ -38,13 +45,32 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [loadCheers]);
 
   useEffect(() => {
     loadData();
     const interval = setInterval(loadData, 30000);
     return () => clearInterval(interval);
   }, [loadData]);
+
+  const handleDeleteCheer = async (id: string) => {
+    try {
+      await api(`/api/cheers?id=${id}`, { method: "DELETE" });
+      setCheers((prev) => prev.filter((c) => c.id !== id));
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const handleDeleteAllCheers = async () => {
+    if (!confirm("받은 응원을 모두 삭제할까요?")) return;
+    try {
+      await api("/api/cheers?all=true", { method: "DELETE" });
+      setCheers([]);
+    } catch {
+      /* ignore */
+    }
+  };
 
   if (loading) {
     return (
@@ -72,12 +98,6 @@ export default function HomePage() {
       <PageHeader title="오늘의 레이스 🏁" subtitle={dateLabel} />
 
       <DDayBanner />
-
-      {cheers.length > 0 && (
-        <CuteCard emoji="💌" title="받은 응원">
-          <ReceivedCheers cheers={cheers} />
-        </CuteCard>
-      )}
 
       {!profile?.group_id ? (
         <CuteCard emoji="👥" title="그룹에 참여해요">
@@ -131,6 +151,14 @@ export default function HomePage() {
                 : "💪 조금만 더 하면 평균을 넘을 수 있어요!"}
             </p>
           )}
+
+          <CuteCard emoji="💌" title={`받은 응원${cheers.length > 0 ? ` (${cheers.length})` : ""}`}>
+            <ReceivedCheers
+              cheers={cheers}
+              onDelete={handleDeleteCheer}
+              onDeleteAll={handleDeleteAllCheers}
+            />
+          </CuteCard>
         </>
       )}
     </div>

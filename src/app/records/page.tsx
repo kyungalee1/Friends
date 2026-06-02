@@ -37,6 +37,16 @@ export default function RecordsPage() {
     loadRecords();
   }, [loadRecords]);
 
+  const handleDelete = async (id: string) => {
+    if (!confirm("이 기록을 삭제할까요?")) return;
+    try {
+      await api(`/api/study/sessions?id=${id}`, { method: "DELETE" });
+      await loadRecords();
+    } catch {
+      /* ignore */
+    }
+  };
+
   const subjectTotals = sessions.reduce<Record<string, number>>((acc, s) => {
     acc[s.subject] = (acc[s.subject] || 0) + s.minutes;
     return acc;
@@ -67,11 +77,11 @@ export default function RecordsPage() {
 
       {Object.keys(subjectTotals).length > 0 && (
         <CuteCard emoji="📖" title="과목별 (이번 주)">
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {Object.entries(subjectTotals)
               .sort(([, a], [, b]) => b - a)
               .map(([subject, minutes]) => (
-                <div key={subject} className="list-row !py-1.5">
+                <div key={subject} className="list-row !py-1">
                   <span className="text-body font-medium">{subject}</span>
                   <span className="text-caption">{formatMinutes(minutes)}</span>
                 </div>
@@ -80,22 +90,31 @@ export default function RecordsPage() {
         </CuteCard>
       )}
 
-      <CuteCard emoji="📝" title="최근 기록">
+      <CuteCard emoji="📝" title={`최근 기록${sessions.length > 0 ? ` (${sessions.length})` : ""}`}>
         {sessions.length === 0 ? (
           <p className="text-caption py-4 text-center">
             아직 기록이 없어요. 공부 타이머를 시작해보세요!
           </p>
         ) : (
-          <div className="max-h-64 space-y-1 overflow-y-auto">
-            {sessions.slice(0, 30).map((session) => (
-              <div key={session.id} className="list-row !py-1.5">
-                <div className="min-w-0 truncate">
-                  <span className="text-body font-medium">{session.subject}</span>
-                  <span className="text-caption ml-2">{session.studied_at}</span>
-                </div>
-                <span className="text-body ml-2 shrink-0 font-medium text-pink">
-                  {session.minutes}분
-                </span>
+          <div className="max-h-72 space-y-0.5 overflow-y-auto">
+            {sessions.map((session) => (
+              <div
+                key={session.id}
+                className="flex items-center gap-1 rounded-lg bg-white/60 px-2 py-1"
+              >
+                <p className="min-w-0 flex-1 truncate text-xs text-soft-text">
+                  <span className="font-medium">{session.subject}</span>
+                  <span className="text-soft-muted"> · {session.studied_at} · </span>
+                  <span className="text-pink">{session.minutes}분</span>
+                </p>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(session.id)}
+                  className="shrink-0 px-1 text-xs text-soft-muted hover:text-coral"
+                  aria-label="삭제"
+                >
+                  ✕
+                </button>
               </div>
             ))}
           </div>

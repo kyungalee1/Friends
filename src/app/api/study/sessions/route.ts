@@ -79,3 +79,33 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "저장에 실패했어요" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const userId = await getSessionUserId();
+    if (!userId) {
+      return NextResponse.json({ error: "로그인이 필요해요" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "삭제할 기록을 지정해주세요" }, { status: 400 });
+    }
+
+    const sql = getSql();
+    const result = await sql`
+      DELETE FROM study_sessions WHERE id = ${id} AND user_id = ${userId} RETURNING id
+    `;
+
+    if (result.length === 0) {
+      return NextResponse.json({ error: "삭제할 수 없어요" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "삭제에 실패했어요" }, { status: 500 });
+  }
+}

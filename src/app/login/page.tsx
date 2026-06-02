@@ -70,7 +70,7 @@ export default function LoginPage() {
           <span className="text-3xl self-center">🏁</span>
           <span className="animate-race-run" style={{ animationDelay: "0.3s" }}>🐢</span>
         </div>
-        <h1 className="text-page-title">공부 레이스</h1>
+        <h1 className="text-page-title">토끼와 거북이</h1>
         <p className="text-page-sub mt-1">친구들과 함께 달려봐요</p>
       </div>
 
