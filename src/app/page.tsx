@@ -4,19 +4,24 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
 import { CuteCard } from "@/components/CuteCard";
 import { RaceTrack } from "@/components/RaceTrack";
-import type { DailyTotal, Profile } from "@/types";
+import { ReceivedCheers } from "@/components/ReceivedCheers";
+import type { DailyTotal, Profile, ReceivedCheer } from "@/types";
 import { formatMinutes } from "@/lib/utils";
 import Link from "next/link";
 
 export default function HomePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [totals, setTotals] = useState<DailyTotal[]>([]);
+  const [cheers, setCheers] = useState<ReceivedCheer[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadData = useCallback(async () => {
     try {
       const me = await api<{ user: Profile }>("/api/auth/me");
       setProfile(me.user);
+
+      const cheersData = await api<{ cheers: ReceivedCheer[] }>("/api/cheers");
+      setCheers(cheersData.cheers.slice(0, 3));
 
       if (me.user.group_id) {
         const race = await api<{ totals: DailyTotal[] }>("/api/groups/race");
@@ -27,6 +32,7 @@ export default function HomePage() {
     } catch {
       setProfile(null);
       setTotals([]);
+      setCheers([]);
     } finally {
       setLoading(false);
     }
@@ -54,10 +60,10 @@ export default function HomePage() {
       : 0;
 
   return (
-    <div className="space-y-5 px-4 pt-6">
+    <div className="space-y-3 px-3 pt-4">
       <header className="text-center">
-        <h1 className="text-2xl font-bold text-soft-text">오늘의 레이스 🏁</h1>
-        <p className="text-sm text-soft-muted">
+        <h1 className="text-xl font-bold text-soft-text">오늘의 레이스 🏁</h1>
+        <p className="text-xs text-soft-muted">
           {new Date().toLocaleDateString("ko-KR", {
             month: "long",
             day: "numeric",
@@ -66,40 +72,49 @@ export default function HomePage() {
         </p>
       </header>
 
+      {cheers.length > 0 && (
+        <CuteCard emoji="💌" title="받은 응원" compact className="!p-2.5">
+          <ReceivedCheers cheers={cheers} compact />
+          <Link href="/group" className="mt-1 block text-center text-[10px] text-soft-muted underline">
+            전체 보기
+          </Link>
+        </CuteCard>
+      )}
+
       {!profile?.group_id ? (
-        <CuteCard emoji="👥" title="그룹에 참여해요">
-          <p className="mb-4 text-sm text-soft-muted">
+        <CuteCard emoji="👥" title="그룹에 참여해요" compact className="!p-3">
+          <p className="mb-3 text-xs text-soft-muted">
             친구들과 함께 레이스를 시작하려면 그룹에 가입하세요!
           </p>
-          <Link href="/group" className="btn-primary block text-center">
+          <Link href="/group" className="btn-primary block text-center text-sm">
             그룹 참여하기
           </Link>
         </CuteCard>
       ) : (
         <>
-          <CuteCard emoji={profile.emoji} title="내 오늘 공부">
+          <CuteCard emoji={profile.emoji} title="내 오늘 공부" compact className="!p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-3xl font-bold text-soft-text">
+                <p className="text-2xl font-bold text-soft-text">
                   {formatMinutes(myTotal?.total_minutes || 0)}
                 </p>
-                <p className="text-sm text-soft-muted">
+                <p className="text-xs text-soft-muted">
                   그룹 평균 {formatMinutes(groupAvg)}
                 </p>
               </div>
-              <Link href="/study" className="btn-primary text-sm !py-2 !px-4">
+              <Link href="/study" className="btn-primary text-xs !py-1.5 !px-3">
                 📚 공부하기
               </Link>
             </div>
           </CuteCard>
 
-          <CuteCard emoji="🏃" title="레이스 현황">
+          <CuteCard emoji="🏃" title="레이스 현황" compact className="!p-2">
             {totals.length === 0 ? (
-              <p className="py-8 text-center text-soft-muted">
+              <p className="py-4 text-center text-xs text-soft-muted">
                 아직 오늘 공부 기록이 없어요. 첫 번째 주자가 되어보세요! 🐰
               </p>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-0.5">
                 {totals.map((member, idx) => (
                   <RaceTrack
                     key={member.user_id}
@@ -116,7 +131,7 @@ export default function HomePage() {
           </CuteCard>
 
           {myTotal && myTotal.total_minutes > 0 && (
-            <div className="rounded-2xl bg-mint/30 px-4 py-3 text-center text-sm font-bold text-soft-text">
+            <div className="rounded-xl bg-mint/30 px-3 py-2 text-center text-xs font-bold text-soft-text">
               {myTotal.total_minutes >= groupAvg
                 ? "🌟 평균 이상! 오늘도 잘하고 있어요!"
                 : "💪 조금만 더 하면 평균을 넘을 수 있어요!"}

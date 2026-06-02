@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getSessionUserId } from "@/lib/auth-session";
 import { getSql } from "@/lib/db";
 
+import { getTodayDateKey } from "@/lib/utils";
+
 export async function GET(request: Request) {
   try {
     const userId = await getSessionUserId();
@@ -10,7 +12,7 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const date = searchParams.get("date") || new Date().toISOString().split("T")[0];
+    const date = searchParams.get("date") || getTodayDateKey();
 
     const sql = getSql();
     const userRows = await sql`SELECT group_id FROM users WHERE id = ${userId}`;

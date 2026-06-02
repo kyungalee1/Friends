@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
 import { CuteCard } from "@/components/CuteCard";
 import { CHEER_MESSAGES } from "@/types";
-import type { Group, Profile } from "@/types";
+import type { Group, Profile, ReceivedCheer } from "@/types";
+import { ReceivedCheers } from "@/components/ReceivedCheers";
 
 export default function GroupPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -15,6 +16,16 @@ export default function GroupPage() {
   const [inviteCode, setInviteCode] = useState("");
   const [message, setMessage] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
+  const [receivedCheers, setReceivedCheers] = useState<ReceivedCheer[]>([]);
+
+  const loadCheers = useCallback(async () => {
+    try {
+      const data = await api<{ cheers: ReceivedCheer[] }>("/api/cheers");
+      setReceivedCheers(data.cheers);
+    } catch {
+      setReceivedCheers([]);
+    }
+  }, []);
 
   const loadData = useCallback(async () => {
     try {
@@ -37,7 +48,8 @@ export default function GroupPage() {
 
   useEffect(() => {
     loadData();
-  }, [loadData]);
+    loadCheers();
+  }, [loadData, loadCheers]);
 
   const handleCreateGroup = async () => {
     if (!groupName.trim()) {
@@ -164,7 +176,11 @@ export default function GroupPage() {
         </>
       ) : (
         <>
-          <CuteCard emoji="🏠" title={group.name}>
+          <CuteCard emoji="💌" title="받은 응원" compact className="!p-3">
+            <ReceivedCheers cheers={receivedCheers} />
+          </CuteCard>
+
+          <CuteCard emoji="🏠" title={group.name} compact className="!p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-soft-muted">초대 코드</p>
@@ -181,28 +197,26 @@ export default function GroupPage() {
             </p>
           </CuteCard>
 
-          <CuteCard emoji="🐰" title="멤버">
-            <div className="space-y-2">
+          <CuteCard emoji="🐰" title="멤버" compact className="!p-3">
+            <div className="space-y-1.5">
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className={`rounded-2xl p-3 ${
+                  className={`rounded-xl p-2 ${
                     member.id === profile?.id ? "bg-pink/15 ring-1 ring-pink/30" : "bg-white/60"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">{member.emoji}</span>
-                      <span className="font-bold">
-                        {member.nickname}
-                        {member.id === profile?.id && (
-                          <span className="ml-1 text-xs text-pink">(나)</span>
-                        )}
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">{member.emoji}</span>
+                    <span className="text-sm font-bold">
+                      {member.nickname}
+                      {member.id === profile?.id && (
+                        <span className="ml-1 text-xs text-pink">(나)</span>
+                      )}
+                    </span>
                   </div>
                   {member.id !== profile?.id && (
-                    <div className="mt-2 flex flex-wrap gap-1">
+                    <div className="mt-1 flex flex-wrap gap-0.5">
                       {CHEER_MESSAGES.map((cheer) => (
                         <button
                           key={cheer.id}
@@ -210,7 +224,7 @@ export default function GroupPage() {
                           onClick={() =>
                             handleSendCheer(member.id, `${cheer.emoji} ${cheer.text}`)
                           }
-                          className="rounded-full bg-white px-2 py-1 text-xs transition-all hover:bg-pink/20 active:scale-95"
+                          className="rounded-full bg-white px-1.5 py-0.5 text-[10px] transition-all hover:bg-pink/20 active:scale-95"
                         >
                           {cheer.emoji} {cheer.text}
                         </button>

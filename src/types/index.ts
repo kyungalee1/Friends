@@ -1,10 +1,10 @@
 export const SUBJECTS = [
   { id: "korean", label: "국어", emoji: "📖", color: "bg-pink/40" },
-  { id: "english", label: "영어", emoji: "🔤", color: "bg-sky/40" },
   { id: "math", label: "수학", emoji: "🔢", color: "bg-lavender/40" },
+  { id: "english", label: "영어", emoji: "🔤", color: "bg-sky/40" },
   { id: "science", label: "과학", emoji: "🔬", color: "bg-mint/40" },
-  { id: "social", label: "사회", emoji: "🌍", color: "bg-peach/40" },
-  { id: "other", label: "기타", emoji: "✨", color: "bg-cream" },
+  { id: "world_history", label: "세계사", emoji: "🌏", color: "bg-peach/40" },
+  { id: "ethics", label: "도덕", emoji: "💛", color: "bg-cream" },
 ] as const;
 
 export const CHEER_MESSAGES = [
@@ -57,4 +57,14 @@ export interface Cheer {
   to_user: string;
   message: string;
   created_at: string;
+  from_nickname?: string;
+  from_emoji?: EmojiChar;
+}
+
+export interface ReceivedCheer {
+  id: string;
+  message: string;
+  created_at: string;
+  from_nickname: string;
+  from_emoji: EmojiChar;
 }

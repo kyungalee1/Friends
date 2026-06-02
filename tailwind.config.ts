@@ -22,7 +22,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        cute: ["var(--font-jua)", "sans-serif"],
+        cute: ["var(--font-cute)", "Apple SD Gothic Neo", "Malgun Gothic", "sans-serif"],
       },
       animation: {
         bounce: "bounce 1s infinite",

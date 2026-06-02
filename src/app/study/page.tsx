@@ -5,6 +5,7 @@ import { api } from "@/lib/api-client";
 import { CuteCard } from "@/components/CuteCard";
 import { StudyTimer } from "@/components/StudyTimer";
 import { SUBJECTS } from "@/types";
+import { getTodayDateKey } from "@/lib/utils";
 
 export default function StudyPage() {
   const [message, setMessage] = useState("");
@@ -20,7 +21,7 @@ export default function StudyPage() {
         body: JSON.stringify({
           subject: subject?.label || subjectId,
           minutes,
-          studied_at: new Date().toISOString().split("T")[0],
+          studied_at: getTodayDateKey(),
         }),
       });
       setMessage(`🎉 ${subject?.emoji} ${subject?.label} ${minutes}분 기록 완료!`);

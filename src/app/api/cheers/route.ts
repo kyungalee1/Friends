@@ -2,6 +2,35 @@ import { NextResponse } from "next/server";
 import { getSessionUserId } from "@/lib/auth-session";
 import { getSql } from "@/lib/db";
 
+export async function GET() {
+  try {
+    const userId = await getSessionUserId();
+    if (!userId) {
+      return NextResponse.json({ error: "로그인이 필요해요" }, { status: 401 });
+    }
+
+    const sql = getSql();
+    const cheers = await sql`
+      SELECT
+        c.id,
+        c.message,
+        c.created_at,
+        u.nickname AS from_nickname,
+        u.emoji AS from_emoji
+      FROM cheers c
+      JOIN users u ON u.id = c.from_user
+      WHERE c.to_user = ${userId}
+      ORDER BY c.created_at DESC
+      LIMIT 30
+    `;
+
+    return NextResponse.json({ cheers });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "조회에 실패했어요" }, { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const userId = await getSessionUserId();

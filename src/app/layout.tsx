@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Jua } from "next/font/google";
+import { Gowun_Dodum } from "next/font/google";
 import "./globals.css";
 import { BottomNav } from "@/components/BottomNav";
 
-const jua = Jua({
+const gowunDodum = Gowun_Dodum({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-jua",
+  variable: "--font-cute",
   display: "swap",
 });
 
@@ -41,8 +41,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className={`${jua.variable} font-cute`}>
-        <main className="mx-auto min-h-dvh max-w-md pb-24">{children}</main>
+      <body className={`${gowunDodum.variable} font-cute antialiased`}>
+        <main className="mx-auto min-h-dvh max-w-md pb-20">{children}</main>
         <BottomNav />
       </body>
     </html>
