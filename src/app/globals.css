@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cream text-soft-text antialiased;
+    background-image: radial-gradient(circle at 20% 20%, rgba(255, 212, 184, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(184, 240, 216, 0.3) 0%, transparent 50%);
+    min-height: 100dvh;
+  }
+}
+
+@layer components {
+  .btn-cute {
+    @apply rounded-2xl px-6 py-3 font-cute text-lg font-bold transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100;
+  }
+
+  .btn-primary {
+    @apply btn-cute bg-gradient-to-r from-pink to-peach text-white shadow-cute hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply btn-cute bg-white text-soft-text shadow-card border-2 border-pink/30;
+  }
+
+  .card-cute {
+    @apply rounded-3xl bg-white/80 backdrop-blur-sm shadow-card border border-white/60 p-5;
+  }
+
+  .input-cute {
+    @apply w-full rounded-2xl border-2 border-pink/20 bg-white px-4 py-3 font-cute text-soft-text placeholder:text-soft-muted focus:border-pink focus:outline-none focus:ring-2 focus:ring-pink/20;
+  }
+}
