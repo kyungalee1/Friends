@@ -37,6 +37,21 @@ export function isValidPin(pin: string): boolean {
   return /^\d{4}$/.test(pin);
 }
 
+export const EXAM_DATE = "2026-07-01";
+export const EXAM_DATE_LABEL = "2026년 7월 1일";
+
+export function getDDay(): { label: string; days: number; isPast: boolean } {
+  const todayStr = getTodayDateKey();
+  const today = new Date(todayStr + "T00:00:00");
+  const exam = new Date(EXAM_DATE + "T00:00:00");
+  const diffMs = exam.getTime() - today.getTime();
+  const days = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+  if (days > 0) return { label: `D-${days}`, days, isPast: false };
+  if (days === 0) return { label: "D-Day", days: 0, isPast: false };
+  return { label: `D+${Math.abs(days)}`, days, isPast: true };
+}
+
 /** KST 기준 YYYY-MM-DD */
 export function getTodayDateKey(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(

@@ -5,6 +5,7 @@ import { api } from "@/lib/api-client";
 import { CuteCard } from "@/components/CuteCard";
 import { RaceTrack } from "@/components/RaceTrack";
 import { ReceivedCheers } from "@/components/ReceivedCheers";
+import { DDayBanner } from "@/components/DDayBanner";
 import type { DailyTotal, Profile, ReceivedCheer } from "@/types";
 import { formatMinutes } from "@/lib/utils";
 import Link from "next/link";
@@ -21,7 +22,7 @@ export default function HomePage() {
       setProfile(me.user);
 
       const cheersData = await api<{ cheers: ReceivedCheer[] }>("/api/cheers");
-      setCheers(cheersData.cheers.slice(0, 3));
+      setCheers(cheersData.cheers.slice(0, 5));
 
       if (me.user.group_id) {
         const race = await api<{ totals: DailyTotal[] }>("/api/groups/race");
@@ -62,7 +63,7 @@ export default function HomePage() {
   return (
     <div className="space-y-3 px-3 pt-4">
       <header className="text-center">
-        <h1 className="text-xl font-bold text-soft-text">오늘의 레이스 🏁</h1>
+        <h1 className="text-xl font-semibold text-soft-text">오늘의 레이스 🏁</h1>
         <p className="text-xs text-soft-muted">
           {new Date().toLocaleDateString("ko-KR", {
             month: "long",
@@ -72,12 +73,11 @@ export default function HomePage() {
         </p>
       </header>
 
+      <DDayBanner />
+
       {cheers.length > 0 && (
         <CuteCard emoji="💌" title="받은 응원" compact className="!p-2.5">
           <ReceivedCheers cheers={cheers} compact />
-          <Link href="/group" className="mt-1 block text-center text-[10px] text-soft-muted underline">
-            전체 보기
-          </Link>
         </CuteCard>
       )}
 
@@ -95,14 +95,14 @@ export default function HomePage() {
           <CuteCard emoji={profile.emoji} title="내 오늘 공부" compact className="!p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold text-soft-text">
+                <p className="text-2xl font-semibold text-soft-text">
                   {formatMinutes(myTotal?.total_minutes || 0)}
                 </p>
                 <p className="text-xs text-soft-muted">
                   그룹 평균 {formatMinutes(groupAvg)}
                 </p>
               </div>
-              <Link href="/study" className="btn-primary text-xs !py-1.5 !px-3">
+              <Link href="/study" className="btn-primary text-sm !py-2 !px-4">
                 📚 공부하기
               </Link>
             </div>
@@ -131,7 +131,7 @@ export default function HomePage() {
           </CuteCard>
 
           {myTotal && myTotal.total_minutes > 0 && (
-            <div className="rounded-xl bg-mint/30 px-3 py-2 text-center text-xs font-bold text-soft-text">
+            <div className="rounded-xl bg-mint/30 px-3 py-2 text-center text-xs font-medium text-soft-text">
               {myTotal.total_minutes >= groupAvg
                 ? "🌟 평균 이상! 오늘도 잘하고 있어요!"
                 : "💪 조금만 더 하면 평균을 넘을 수 있어요!"}

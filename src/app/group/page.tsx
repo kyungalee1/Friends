@@ -4,8 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
 import { CuteCard } from "@/components/CuteCard";
 import { CHEER_MESSAGES } from "@/types";
-import type { Group, Profile, ReceivedCheer } from "@/types";
-import { ReceivedCheers } from "@/components/ReceivedCheers";
+import type { Group, Profile } from "@/types";
 
 export default function GroupPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -16,16 +15,6 @@ export default function GroupPage() {
   const [inviteCode, setInviteCode] = useState("");
   const [message, setMessage] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
-  const [receivedCheers, setReceivedCheers] = useState<ReceivedCheer[]>([]);
-
-  const loadCheers = useCallback(async () => {
-    try {
-      const data = await api<{ cheers: ReceivedCheer[] }>("/api/cheers");
-      setReceivedCheers(data.cheers);
-    } catch {
-      setReceivedCheers([]);
-    }
-  }, []);
 
   const loadData = useCallback(async () => {
     try {
@@ -48,8 +37,7 @@ export default function GroupPage() {
 
   useEffect(() => {
     loadData();
-    loadCheers();
-  }, [loadData, loadCheers]);
+  }, [loadData]);
 
   const handleCreateGroup = async () => {
     if (!groupName.trim()) {
@@ -127,9 +115,9 @@ export default function GroupPage() {
   }
 
   return (
-    <div className="space-y-5 px-4 pt-6">
+    <div className="space-y-4 px-4 pt-5">
       <header className="text-center">
-        <h1 className="text-2xl font-bold text-soft-text">그룹 👥</h1>
+        <h1 className="text-xl font-semibold text-soft-text">그룹 👥</h1>
         <p className="text-sm text-soft-muted">
           {profile?.emoji} {profile?.nickname}
         </p>
@@ -176,15 +164,11 @@ export default function GroupPage() {
         </>
       ) : (
         <>
-          <CuteCard emoji="💌" title="받은 응원" compact className="!p-3">
-            <ReceivedCheers cheers={receivedCheers} />
-          </CuteCard>
-
           <CuteCard emoji="🏠" title={group.name} compact className="!p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-soft-muted">초대 코드</p>
-                <p className="text-2xl font-bold tracking-widest text-soft-text">
+                <p className="text-2xl font-semibold tracking-widest text-soft-text">
                   {group.invite_code}
                 </p>
               </div>
@@ -198,7 +182,7 @@ export default function GroupPage() {
           </CuteCard>
 
           <CuteCard emoji="🐰" title="멤버" compact className="!p-3">
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {members.map((member) => (
                 <div
                   key={member.id}
@@ -208,7 +192,7 @@ export default function GroupPage() {
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-base">{member.emoji}</span>
-                    <span className="text-sm font-bold">
+                    <span className="text-sm font-semibold">
                       {member.nickname}
                       {member.id === profile?.id && (
                         <span className="ml-1 text-xs text-pink">(나)</span>
@@ -216,7 +200,7 @@ export default function GroupPage() {
                     </span>
                   </div>
                   {member.id !== profile?.id && (
-                    <div className="mt-1 flex flex-wrap gap-0.5">
+                    <div className="mt-1.5 flex flex-wrap gap-1">
                       {CHEER_MESSAGES.map((cheer) => (
                         <button
                           key={cheer.id}
@@ -224,7 +208,7 @@ export default function GroupPage() {
                           onClick={() =>
                             handleSendCheer(member.id, `${cheer.emoji} ${cheer.text}`)
                           }
-                          className="rounded-full bg-white px-1.5 py-0.5 text-[10px] transition-all hover:bg-pink/20 active:scale-95"
+                          className="rounded-full bg-white px-2 py-1 text-[11px] transition-all hover:bg-pink/20 active:scale-95"
                         >
                           {cheer.emoji} {cheer.text}
                         </button>
@@ -239,16 +223,12 @@ export default function GroupPage() {
       )}
 
       {message && (
-        <div className="rounded-2xl bg-lavender/30 px-4 py-3 text-center text-sm font-bold text-soft-text">
+        <div className="rounded-2xl bg-lavender/30 px-4 py-3 text-center text-sm font-medium text-soft-text">
           {message}
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={handleLogout}
-        className="w-full py-3 text-sm text-soft-muted underline"
-      >
+      <button type="button" onClick={handleLogout} className="btn-secondary w-full">
         로그아웃
       </button>
     </div>

@@ -1,14 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Gowun_Dodum } from "next/font/google";
 import "./globals.css";
 import { BottomNav } from "@/components/BottomNav";
-
-const gowunDodum = Gowun_Dodum({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-cute",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "공부 레이스 🐰🐢",
@@ -41,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className={`${gowunDodum.variable} font-cute antialiased`}>
+      <body className="font-cute antialiased">
         <main className="mx-auto min-h-dvh max-w-md pb-20">{children}</main>
         <BottomNav />
       </body>

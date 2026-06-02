@@ -12,6 +12,22 @@ export const CHEER_MESSAGES = [
   { id: "good", emoji: "⭐", text: "오늘도 최고!" },
   { id: "clap", emoji: "👏", text: "수고했어!" },
   { id: "heart", emoji: "💪", text: "힘내!" },
+  { id: "sparkle", emoji: "✨", text: "대단해!" },
+  { id: "hundred", emoji: "💯", text: "백점 가자!" },
+  { id: "rocket", emoji: "🚀", text: "날아올라!" },
+  { id: "star", emoji: "🌟", text: "빛나!" },
+  { id: "book", emoji: "📚", text: "열공 인정!" },
+  { id: "run", emoji: "🏃", text: "멋져!" },
+  { id: "rainbow", emoji: "🌈", text: "응원해!" },
+  { id: "target", emoji: "🎯", text: "목표 달성!" },
+  { id: "sun", emoji: "☀️", text: "좋은 하루!" },
+  { id: "love", emoji: "💗", text: "최고야!" },
+  { id: "thumbs", emoji: "👍", text: "잘하고 있어!" },
+  { id: "party", emoji: "🎉", text: "짱!" },
+  { id: "bear", emoji: "🧸", text: "귀엽다!" },
+  { id: "moon", emoji: "🌙", text: "푹 쉬어!" },
+  { id: "flower", emoji: "🌸", text: "예쁘게 해냈어!" },
+  { id: "medal", emoji: "🏅", text: "1등 각!" },
 ] as const;
 
 export type SubjectId = (typeof SUBJECTS)[number]["id"];
