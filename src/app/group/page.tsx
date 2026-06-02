@@ -100,6 +100,23 @@ export default function GroupPage() {
     window.location.href = "/login";
   };
 
+  const handleWithdraw = async () => {
+    const ok = window.confirm(
+      "정말 탈퇴할까요?\n\n공부 기록, 응원, 그룹 정보가 모두 삭제되고\n같은 번호로 다시 가입해야 해요."
+    );
+    if (!ok) return;
+
+    setActionLoading(true);
+    setMessage("");
+    try {
+      await api("/api/auth/withdraw", { method: "DELETE" });
+      window.location.href = "/login";
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "탈퇴에 실패했어요");
+      setActionLoading(false);
+    }
+  };
+
   const copyInviteCode = () => {
     if (group?.invite_code) {
       navigator.clipboard.writeText(group.invite_code);
@@ -126,6 +143,26 @@ export default function GroupPage() {
   };
 
   const isGroupCreator = group?.created_by === profile?.id;
+
+  const handleRemoveMember = async (member: Profile) => {
+    if (!window.confirm(`${member.nickname}님을 그룹에서 제외할까요?`)) {
+      return;
+    }
+    setActionLoading(true);
+    setMessage("");
+    try {
+      await api("/api/groups/members", {
+        method: "DELETE",
+        body: JSON.stringify({ user_id: member.id }),
+      });
+      setMessage(`${member.nickname}님을 그룹에서 보냈어요`);
+      await loadData();
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "멤버 제거 실패");
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -230,13 +267,26 @@ export default function GroupPage() {
                       )}
                     </span>
                   </div>
-                  {member.id !== profile?.id && (
-                    <CheerPicker
-                      memberName={member.nickname}
-                      memberEmoji={member.emoji}
-                      onSend={(msg) => handleSendCheer(member.id, msg)}
-                    />
-                  )}
+                  <div className="flex shrink-0 items-center gap-1">
+                    {member.id !== profile?.id && (
+                      <CheerPicker
+                        memberName={member.nickname}
+                        memberEmoji={member.emoji}
+                        onSend={(msg) => handleSendCheer(member.id, msg)}
+                      />
+                    )}
+                    {isGroupCreator && member.id !== profile?.id && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveMember(member)}
+                        disabled={actionLoading}
+                        className="rounded-lg px-2 py-1 text-xs text-coral hover:bg-coral/10"
+                        aria-label={`${member.nickname} 제외`}
+                      >
+                        제외
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -248,6 +298,15 @@ export default function GroupPage() {
 
       <button type="button" onClick={handleLogout} className="btn-primary">
         로그아웃
+      </button>
+
+      <button
+        type="button"
+        onClick={handleWithdraw}
+        disabled={actionLoading}
+        className="btn-inline w-full text-soft-muted underline"
+      >
+        {actionLoading ? "처리 중..." : "탈퇴하기"}
       </button>
     </div>
   );

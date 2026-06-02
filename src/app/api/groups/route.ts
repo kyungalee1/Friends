@@ -27,7 +27,7 @@ export async function GET() {
     const memberRows = await sql`
       SELECT id, phone, nickname, emoji, group_id, created_at
       FROM users WHERE group_id = ${profile.group_id}
-      ORDER BY created_at
+      ORDER BY (id = ${userId}) DESC, created_at
     `;
 
     return NextResponse.json({
